@@ -19,22 +19,30 @@ router.get('/', function(req, res, next) {
 	var url = baseUrl.replace(STREET, street);
 	url = url.replace(BLOCK, block);
 
-	getPostalCode(url, function(postalCode) {
-			res.send(postalCode);
+	getPostalCode(url, function(postalCodes) {
+			var result = {postalCodes: postalCodes};
+
+			res.send(result);
 	});
 });
 
 function getPostalCode(url, callback) {
 	downloader.download(url, function(data) {
-		var postalCode = 'no lo encontré';
+		var postalCodes = ['no lo encontré'];
 	  if (data) {
 	    var $ = cheerio.load(data);
 	    $("body").each(function(i, e) {
-	      postalCode = $(e).find("td font b").text()
+	      postalCodes = [];
+	      $(e).find("td font b").each(function(i, postalCode) {
+	      		postalCode = $(postalCode).text().trim();
+	      		if(postalCode) {
+		      		postalCodes.push(postalCode);
+		      	}
+		    });
 	    });
 	  }
 
-	  callback(postalCode);
+	  callback(postalCodes);
 	});
 }
 
