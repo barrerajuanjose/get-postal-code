@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 	url = url.replace(BLOCK, block);
 
 	getPostalCode(url, function(postalCodes) {
-			var result = {postalCodes: postalCodes};
+			var result = {postal_codes: postalCodes};
 
 			res.send(result);
 	});
